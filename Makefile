@@ -17,29 +17,31 @@
 # in CFLAGS below (path is the full pathname of the directory).
 # To do save/restore context, include -DSAVE in CFLAGS below.
 #
-DESTDIR=
-BINDIR= 	/mit/sipb/$(MACHINE)bin
+DESTDIR=	/usr/local/
+BINDIR= 	bin
 MANSECT= 	1
-MANDIR= 	/mit/sipb/man/man$(MANSECT)
+MANDIR= 	man/man$(MANSECT)
 INSTALL= 	install
 CP= 		cp -f
-CONFIG= 	/mit/sipb/lib/macps
+CONFIG= 	etc/macps
 DEFINES=	
-CFLAGS= 	-O $(DEFINES) -DCONFIGDIR=\"$(CONFIG)\"
+CFLAGS= 	-O $(DEFINES) -DCONFIGDIR=\"$(DESTDIR)$(CONFIG)\"
 MACPS= 		macps.o macaux.o ucbwhich.o
 PREPFIX= 	prepfix.o macaux.o
-PREPFILES= 	LaserPrep5.1 LaserPrep5.2 LaserPrep6.0
+PREPFILES= 	AppleDict65 AppleDict66 AppleDict67 AppleDict68 AppleDict70 AppleDict71
 
 all : macps prepfix
 
 install: all
+	mkdir -p $(DESTDIR)$(BINDIR)
+	mkdir -p $(DESTDIR)$(MANDIR)
 	$(INSTALL) -c -s macps $(DESTDIR)$(BINDIR)/macps
 	$(INSTALL) -c -s prepfix $(DESTDIR)$(BINDIR)/prepfix
 	$(CP) macps.1 $(DESTDIR)$(MANDIR)/macps.$(MANSECT)
 	$(CP) prepfix.1 $(DESTDIR)$(MANDIR)/prepfix.$(MANSECT)
 	-if [ ! -d ${DESTDIR}${CONFIG} ]; then \
 		rm -f ${DESTDIR}${CONFIG}; \
-		mkdir ${DESTDIR}${CONFIG}; fi
+		mkdir -p ${DESTDIR}${CONFIG}; fi
 	$(CP) macps.config $(DESTDIR)$(CONFIG)/macps.config
 	$(CP) $(PREPFILES) $(DESTDIR)$(CONFIG)
 
