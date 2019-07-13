@@ -54,6 +54,8 @@ char ProdArr1[] = "] def\n";
 char **products;
 char tempname[] = "/tmp/prepfixXXXXXX";
 
+void spliteexec(register STR *str);
+
 main(argc, argv)
 int argc;
 char **argv;
@@ -211,6 +213,7 @@ register STR *str;
 	spliteexec(str);
 }
 
+void
 spliteexec(str)
 register STR *str;
 {

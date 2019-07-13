@@ -83,6 +83,7 @@ register FILE *fp;
 	}
 }
 
+void
 STRputsptr(str, cp, fp)
 register STR *str;
 register unsigned char *cp;

@@ -36,4 +36,4 @@ int STRfree();
 int STRgets();
 int STRheadcmpptr();
 unsigned char *STRmatch();
-int STRputsptr();
+void STRputsptr();
