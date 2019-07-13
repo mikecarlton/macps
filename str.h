@@ -32,7 +32,7 @@ extern int rawmode;
 
 STR *STRalloc();
 int STRcompareptr();
-int STRfree();
+void STRfree();
 int STRgets();
 int STRheadcmpptr();
 unsigned char *STRmatch();

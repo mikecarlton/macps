@@ -13,15 +13,17 @@
 
 #ifndef lint
 static char *SCCSid = "@(#)prepfix.c	2.2 10/25/89";
-#endif lint
+#endif
 
 #include <ctype.h>
 #include <stdio.h>
 #ifdef SYSV
 #include <string.h>
-#else SYSV
+#else
 #include <strings.h>
-#endif SYSV
+#endif
+#include <stdlib.h>
+#include <unistd.h>
 #include "str.h"
 
 #define	CLEARTOMARK	12
@@ -34,7 +36,7 @@ static char *SCCSid = "@(#)prepfix.c	2.2 10/25/89";
 #ifdef SYSV
 #define	index		strchr
 #define	rindex		strrchr
-#endif SYSV
+#endif
 
 char exstr[] = "\
 %ck userdict/%s known not and{currentfile eexec}{%d{currentfile read\n\
@@ -55,7 +57,11 @@ char **products;
 char tempname[] = "/tmp/prepfixXXXXXX";
 
 void spliteexec(register STR *str);
+void usage();
+void eexec(char *name, register STR *str);
+void checkload(register STR *str);
 
+int
 main(argc, argv)
 int argc;
 char **argv;
@@ -65,9 +71,8 @@ char **argv;
 	register int i;
 	register unsigned char *lp;
 	char buf[BUFSIZ];
-	char *malloc(), *realloc();
 
-	if(myname = rindex(*argv, '/'))
+	if((myname = rindex(*argv, '/')))
 		myname++;
 	else
 		myname = *argv;
@@ -170,7 +175,7 @@ char **argv;
 				{ /* ignore line */ }
 			while(STRgets(str, stdin) && isxdigit(*str->bufptr))
 				{ /* ignore line */ }
-		} else if(lp = STRmatch(str, "scaleby96{ppr")) {
+		} else if((lp = STRmatch(str, "scaleby96{ppr"))) {
 			STRputsptr(str, lp, stdout);
 			continue;
 		} else if(STRmatch(str, "waittimeout"))
@@ -184,6 +189,7 @@ char **argv;
 	exit(0);
 }
 
+void
 eexec(name, str)
 char *name;
 register STR *str;
@@ -200,6 +206,7 @@ register STR *str;
 	spliteexec(str);
 }
 
+void
 checkload(str)
 register STR *str;
 {
@@ -244,6 +251,7 @@ register STR *str;
 	}
 }
 
+void
 usage()
 {
 	fprintf(stderr,

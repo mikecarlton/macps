@@ -13,14 +13,17 @@
 
 #ifndef lint
 static char *SCCSid = "@(#)macps.c	2.2 10/25/89";
-#endif lint
+#endif
 
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/file.h>
 #include <fcntl.h>
+#include <time.h>
+#include <unistd.h>
 #include "str.h"
 #include "ucbwhich.h"
 
@@ -28,7 +31,7 @@ static char *SCCSid = "@(#)macps.c	2.2 10/25/89";
 #ifdef SYSV
 #define	index		strchr
 #define	rindex		strrchr
-#endif SYSV
+#endif
 
 #ifdef SAVE
 char *finale = "clear countdictstack 2 sub{end}repeat macps restore\n";
@@ -36,22 +39,24 @@ char intro[] = "\
 %%! *** Created by macps: %s\
 /macps save def\n\
 ";
-#else SAVE
+#else
 char intro[] = "\
 %%! *** Created by macps: %s\
 ";
-#endif SAVE
+#endif
 char *myname;
 int ncopies = 0;
 #ifdef CONFIGDIR
 char ucblib[UCBMAXPATHLEN] = CONFIGDIR;
-#else CONFIGDIR
+#else
 int ucbalternate;
 char ucbpath[UCBMAXPATHLEN];
 char ucblib[UCBMAXPATHLEN];
-#endif CONFIGDIR
+#endif
 
-main(argc, argv)
+void Usage();
+
+int main(argc, argv)
 int argc;
 char **argv;
 {
@@ -66,8 +71,8 @@ char **argv;
 
 #ifndef CONFIGDIR
 	ucbwhich(*argv);
-#endif CONFIGDIR
-	if(myname = rindex(*argv, '/'))
+#endif
+	if((myname = rindex(*argv, '/')))
 		myname++;
 	else
 		myname = *argv;
@@ -134,7 +139,7 @@ char **argv;
 				fputs(finale, stdout);
 				finale = NULL;
 			}
-#endif SAVE
+#endif
 			STRputs(str, stdout);
 			continue;
 		}
@@ -166,7 +171,7 @@ char **argv;
 				}
 				if(*line == '#')
 					continue;
-				if(pp = index(line, '\n')) {
+				if((pp = index(line, '\n'))) {
 					if(pp == line)
 						continue;
 					*pp = 0;
@@ -215,10 +220,11 @@ char **argv;
 #ifdef SAVE
 	if(finale)
 		fputs(finale, stdout);
-#endif SAVE
+#endif
 	exit(0);
 }
 
+void
 Usage()
 {
 	fputs("Usage: macps [-c #] [-d directory] [-r] [file]\n", stderr);

@@ -13,10 +13,12 @@
 
 #ifndef lint
 static char *SCCSid = "@(#)macaux.c	2.2 10/24/89";
-#endif lint
+#endif
 
 #include <ctype.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "str.h"
 
 #define	FALSE		0
@@ -29,7 +31,6 @@ STR *
 STRalloc()
 {
 	register STR *str;
-	char *malloc();
 
 	if((str = (STR *)malloc(sizeof(STR))) == NULL ||
 	 (str->bufptr = (unsigned char *)malloc(STRSIZE)) == NULL) {
@@ -41,6 +42,7 @@ STRalloc()
 	return(str);
 }
 
+void
 STRfree(str)
 STR *str;
 {
@@ -48,11 +50,11 @@ STR *str;
 	free((char *)str);
 }
 
+void
 STRexpand(str)
 register STR *str;
 {
 	register int curend, realend;
-	char *realloc();
 
 	curend = str->curendptr - str->bufptr;
 	realend = (str->realendptr - str->bufptr) + STRSIZEDELTA;
@@ -65,6 +67,7 @@ register STR *str;
 	str->realendptr = str->bufptr + realend;
 }
 
+int
 STRgets(str, fp)
 register STR *str;
 register FILE *fp;
@@ -116,6 +119,7 @@ register FILE *fp;
 	}
 }
 
+int
 STRcompareptr(str, cp, sp)
 register STR *str;
 register unsigned char *cp, *sp;
@@ -137,6 +141,7 @@ register unsigned char *cp, *sp;
 	}
 }
 
+int
 STRheadcmpptr(str, cp, sp)
 register STR *str;
 register unsigned char *cp, *sp;
@@ -167,7 +172,7 @@ register unsigned char *sp;
 	register int firstchar;
 
 	firstchar = *sp;
-	last = str->curendptr - strlen(sp);
+	last = str->curendptr - strlen((const char *)sp);
 	mp = str->bufptr;
 	while(mp <= last) {
 		if(*mp == firstchar && STRheadcmpptr(str, mp, sp) == 0)

@@ -122,4 +122,4 @@ char *str;
 #endif EBUG
 	return(ucbalternate);
 }
-#endif CONFIGDIR
+#endif
